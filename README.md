@@ -7,40 +7,35 @@ MVP de escritorio para el control de asistencia de empleados y generación de re
 ## Stack Tecnológico
 
 * **Lenguaje:** Java (JDK 21 o superior)
-* **Interfaz Gráfica:** JavaFX (ControlsFX, BootstrapFX)
-* **Arquitectura:** Modelo-Vista-Controlador (MVC)
 * **Gestor de Dependencias:** Apache Maven
-* **Base de Datos:** MySQL / MariaDB (XAMPP)
+* **Base de Datos:** SQLite
 * **Control de Versiones:** Git & GitHub
 
 ---
 
-## Requerimientos del Sistema
+## Requerimientos del Sistema (Avance 2)
 
-* **CA-01:** Control de asistencia (Registro de entrada y salida mediante botón).
-* **GU-01 al GU-03:** CRUD completo de usuarios (Solo Administrador).
-* **RE-01:** Reporte de atrasos (Entradas posteriores a las 09:30 AM).
-* **RE-02:** Reporte de salidas anticipadas (Salidas previas a las 17:30 PM).
-* **RE-03:** Reporte de inasistencias diarias.
+* **GU-01 al GU-03:** Base de datos preparada para CRUD de usuarios.
+* **Modelo Relacional:** Script de creación de base de datos (`database/schema.sql` y `database/schema.txt`).
+* **Conexión:** Verificación de conexión en Java mediante `DatabaseConnection.java`.
 
 ---
 
 ## Configuración y Ejecución Local
 
 ### 1. Requisitos Previos
-* Tener instalado **XAMPP** con el servicio de MySQL activo en el puerto `3306`.
-* Tener configurado el JDK en IntelliJ IDEA.
+* Tener instalado el JDK 21 o superior.
+* No se requiere instalar motores de bases de datos pesados (XAMPP/MySQL) ya que estamos utilizando SQLite para mayor portabilidad.
 
 ### 2. Base de Datos
-1. Iniciar **Apache** y **MySQL** desde el panel de control de XAMPP.
-2. Acceder a `http://localhost/phpmyadmin/`.
-3. Crear una base de datos llamada `regattend_db`.
-4. Importar el script SQL disponible en `/database/schema.sql`.
+* La base de datos `regattend.db` se autogenerará en la raíz del proyecto al ejecutar el código. 
+* El archivo con las sentencias SQL que crea las tablas se encuentra en `database/schema.sql`.
 
-### 3. Ejecución
-* Abrir el proyecto en IntelliJ IDEA.
-* Esperar a que Maven descargue las dependencias (`pom.xml`).
-* Ejecutar la clase `Launcher.java`.
+### 3. Ejecución en VS Code
+1. Clona este repositorio o descomprime el proyecto.
+2. Abre la carpeta del proyecto en Visual Studio Code.
+3. Puedes ejecutar la clase principal haciendo clic en `Run` sobre el archivo `Launcher.java`.
+4. Alternativamente, puedes hacer doble clic en el archivo `run.bat` que compilará y ejecutará el proyecto por ti.
 
 ---
 
@@ -48,8 +43,5 @@ MVP de escritorio para el control de asistencia de empleados y generación de re
 
 Para mantener el orden entre los integrantes:
 * **Rama `main`:** Código de producción estable y probado.
-* **Ramas por funcionalidad:** `feature/nombre-de-la-tarea` (ej: `feature/login-view`, `feature/usuario-dao`).
-* **Regla:** Antes de comenzar una tarea, actualizar la rama base ejecutando:
-  ```bash
-  git checkout main
-  git pull origin main
+* **Ramas por funcionalidad:** `feature/nombre-de-la-tarea`.
+* **Regla:** Antes de comenzar una tarea, recuerda hacer `git pull origin main`.

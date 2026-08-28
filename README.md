@@ -31,10 +31,11 @@ MVP de escritorio para el control de asistencia de empleados y generación de re
 * La base de datos `regattend.db` se autogenerará en la raíz del proyecto al ejecutar el código. 
 * El archivo con las sentencias SQL que crea las tablas se encuentra en `database/schema.sql`.
 
-### 3. Ejecución en VS Code
+### 3. Ejecución en IntelliJ IDEA
 1. Clona este repositorio o descomprime el proyecto.
-2. Abre la carpeta del proyecto en Visual Studio Code.
-3. Puedes ejecutar la clase principal haciendo clic en `Run` sobre el archivo `Launcher.java`.
+2. Abre IntelliJ IDEA y selecciona **"Open"** -> Elige la carpeta del proyecto.
+3. Espera unos segundos a que IntelliJ detecte el archivo `pom.xml` e instale las dependencias automáticamente.
+4. Ve a la carpeta `src/main/java/com/example/regattend/`, haz clic derecho sobre `Launcher.java` y selecciona **Run 'Launcher.main()'**.
 4. Alternativamente, puedes hacer doble clic en el archivo `run.bat` que compilará y ejecutará el proyecto por ti.
 
 ---

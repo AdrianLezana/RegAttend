@@ -1,9 +1,13 @@
 package com.example.regattend;
 
-import javafx.application.Application;
+import com.example.regattend.config.DatabaseConnection;
 
 public class Launcher {
     public static void main(String[] args) {
-        Application.launch(HelloApplication.class, args);
+        System.out.println("Creando/Conectando a la base de datos...");
+        
+        DatabaseConnection.getConnection();
+        
+        System.out.println("¡Listo! Ya puedes ver el archivo regattend.db en tu carpeta.");
     }
 }

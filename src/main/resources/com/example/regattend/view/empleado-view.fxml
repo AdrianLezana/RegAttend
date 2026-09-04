@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="700.0" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.regattend.controller.EmpleadoController">
+    <top>
+        <HBox alignment="CENTER_RIGHT" style="-fx-background-color: #2c3e50;" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="12.0" left="20.0" right="20.0" top="12.0" />
+            </padding>
+            <children>
+                <Label fx:id="lblUsuarioLogueado" text="Bienvenido, Trabajador" textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="13.0" />
+                    </font>
+                </Label>
+                <HBox HBox.hgrow="ALWAYS" />
+                <Button mnemonicParsing="false" onAction="#handleCerrarSesion" styleClass="button-danger" text="Cerrar Sesión" />
+            </children>
+        </HBox>
+    </top>
+    <center>
+        <VBox alignment="CENTER" spacing="25.0" BorderPane.alignment="CENTER">
+            <children>
+                <Label text="Registro Diario de Asistencia">
+                    <font>
+                        <Font name="System Bold" size="24.0" />
+                    </font>
+                </Label>
+                <Label fx:id="lblFechaHoraActual" text="Fecha: 04/09/2026 - 12:00:00" textFill="#7f8c8d">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Label>
+
+                <HBox alignment="CENTER" spacing="30.0">
+                    <children>
+                        <Button fx:id="btnMarcarEntrada" mnemonicParsing="false" onAction="#handleMarcarEntrada" prefHeight="65.0" prefWidth="180.0" styleClass="button-success" text="Marcar Entrada">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+                        <Button fx:id="btnMarcarSalida" mnemonicParsing="false" onAction="#handleMarcarSalida" prefHeight="65.0" prefWidth="180.0" styleClass="button-warning" text="Marcar Salida">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+                    </children>
+                    <VBox.margin>
+                        <Insets top="15.0" />
+                    </VBox.margin>
+                </HBox>
+
+                <VBox alignment="CENTER" maxWidth="400.0" styleClass="card">
+                    <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                    </padding>
+                    <children>
+                        <Label fx:id="lblEstadoMarcaje" text="Estado actual: Jornada no iniciada" textFill="#2980b9">
+                            <font>
+                                <Font name="System Bold" size="12.0" />
+                            </font>
+                        </Label>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+    </center>
+</BorderPane>

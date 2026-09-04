@@ -1,0 +1,57 @@
+/* Estilos de modo general para la app */
+
+.root {
+    -fx-font-family: "Segow UI", Helvetica, "Arial", sans-serif;
+    -fx-background-color: #f4f6f9;
+}
+/* Colores generales para la app */
+.button-primary {
+    -fx-background-color: #2980b9;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+}
+.button-primary:hover {
+    -fx-background-color: #3498db;
+}
+/* Botones de éxito y de entrada */
+.button-success {
+    -fx-background-color: #27ae60;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+}
+.button-success:hover {
+    -fx-background-color: #2ecc71;
+}
+/* Botones de advertencia y de salida */
+.button-warning {
+    -fx-background-color: #d35400;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+}
+.button-warning:hover {
+    -fx-background-color: #e67e22;
+}
+/* Botones de peligro y de salir */
+.button-danger {
+    -fx-background-color: #c0392b;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+}
+.button-danger:hover {
+    -fx-background-color: #e74c3c;
+}
+
+/* Contenedores para botones y textos */
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 2);
+}

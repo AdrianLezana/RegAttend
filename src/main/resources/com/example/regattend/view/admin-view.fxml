@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="580.0" prefWidth="850.0" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.regattend.controller.AdminController">
+    <top>
+        <HBox alignment="CENTER_RIGHT" style="-fx-background-color: #2c3e50;" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="12.0" left="20.0" right="20.0" top="12.0" />
+            </padding>
+            <children>
+                <Label text="Panel de Administración - RegAttend" textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="14.0" />
+                    </font>
+                </Label>
+                <HBox HBox.hgrow="ALWAYS" />
+                <Button mnemonicParsing="false" onAction="#handleCerrarSesion" styleClass="button-danger" text="Cerrar Sesión" />
+            </children>
+        </HBox>
+    </top>
+    <center>
+        <VBox spacing="15.0" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+            <children>
+                <Label text="Generación de Reportes Operativos">
+                    <font>
+                        <Font name="System Bold" size="18.0" />
+                    </font>
+                </Label>
+
+                <HBox alignment="CENTER_LEFT" spacing="12.0">
+                    <children>
+                        <Label text="Tipo de Reporte:" />
+                        <ComboBox fx:id="cmbTipoReporte" prefWidth="250.0" promptText="Seleccione una opción..." />
+                        <Button fx:id="btnGenerarReporte" mnemonicParsing="false" onAction="#handleGenerarReporte" styleClass="button-primary" text="Generar Reporte" />
+                    </children>
+                </HBox>
+
+                <TableView fx:id="tblReportes" prefHeight="380.0" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colIdUsuario" prefWidth="70.0" text="ID" />
+                        <TableColumn fx:id="colNombre" prefWidth="210.0" text="Nombre Trabajador" />
+                        <TableColumn fx:id="colFecha" prefWidth="110.0" text="Fecha" />
+                        <TableColumn fx:id="colEntrada" prefWidth="110.0" text="Entrada" />
+                        <TableColumn fx:id="colSalida" prefWidth="110.0" text="Salida" />
+                        <TableColumn fx:id="colEstado" prefWidth="160.0" text="Observación / Estado" />
+                    </columns>
+                </TableView>
+            </children>
+        </VBox>
+    </center>
+</BorderPane>

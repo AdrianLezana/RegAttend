@@ -183,10 +183,10 @@ public class UsuarioController implements Initializable {
     }
 
     /**
-     * Acción para ELIMINAR un usuario seleccionado.
+     * Acción para DESACTIVAR un usuario seleccionado.
      */
     @FXML
-    private void onEliminar(ActionEvent event) {
+    private void onDesactivar(ActionEvent event) {
         if (usuarioSeleccionado == null) {
             mostrarAlerta(Alert.AlertType.WARNING, "Sin Selección", "Selecciona un usuario de la tabla para eliminar.");
             return;
@@ -194,19 +194,19 @@ public class UsuarioController implements Initializable {
 
         // Confirmación previa
         Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmacion.setTitle("Confirmar Eliminación");
-        confirmacion.setHeaderText("¿Estás seguro de eliminar a " + usuarioSeleccionado.getNombre() + "?");
-        confirmacion.setContentText("Esta acción no se puede deshacer.");
+        confirmacion.setTitle("Confirmar Desactivación");
+        confirmacion.setHeaderText("¿Estás seguro de desactivar a " + usuarioSeleccionado.getNombre() + "?");
+        confirmacion.setContentText("El usuario se conservará en la base de datos y no podrá iniciar sesión.");
 
         Optional<ButtonType> resultado = confirmacion.showAndWait();
         if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
-            boolean eliminado = usuarioDAO.deleteUsuario(usuarioSeleccionado.getId());
-            if (eliminado) {
-                mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Usuario eliminado correctamente.");
+            boolean desactivado = usuarioDAO.desactivarUsuario(usuarioSeleccionado.getId());
+            if (desactivado) {
+                mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Usuario desactivado correctamente.");
                 cargarUsuarios();
                 limpiarCampos();
             } else {
-                mostrarAlerta(Alert.AlertType.ERROR, "Error", "No se pudo eliminar el usuario.");
+                mostrarAlerta(Alert.AlertType.ERROR, "Error", "No se pudo desactivar el usuario.");
             }
         }
     }
@@ -240,5 +240,34 @@ public class UsuarioController implements Initializable {
         alerta.setHeaderText(null);
         alerta.setContentText(mensaje);
         alerta.showAndWait();
+    }
+
+    /**
+     * Acción para ELIMINAR un usuario seleccionado.
+     */
+    @FXML
+    private void onEliminar(ActionEvent event) {
+        if (usuarioSeleccionado == null) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Sin Selección", "Selecciona un usuario de la tabla para eliminar.");
+            return;
+        }
+
+        // Confirmación previa
+        Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmacion.setTitle("Confirmar Eliminación");
+        confirmacion.setHeaderText("¿Estás seguro de eliminar a " + usuarioSeleccionado.getNombre() + "?");
+        confirmacion.setContentText("Esta acción no se puede deshacer.");
+
+        Optional<ButtonType> resultado = confirmacion.showAndWait();
+        if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
+            boolean eliminado = usuarioDAO.deleteUsuario(usuarioSeleccionado.getId());
+            if (eliminado) {
+                mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Usuario eliminado correctamente.");
+                cargarUsuarios();
+                limpiarCampos();
+            } else {
+                mostrarAlerta(Alert.AlertType.ERROR, "Error", "No se pudo eliminar el usuario.");
+            }
+        }
     }
 }

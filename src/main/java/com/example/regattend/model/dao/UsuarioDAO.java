@@ -14,7 +14,7 @@ public class UsuarioDAO {
 
     public List<Usuario> getAllUsuarios() {
         List<Usuario> lista = new ArrayList<>();
-        String sql = "SELECT * FROM usuarios";
+        String sql = "SELECT id, correo, password, nombre, rol, activo FROM usuarios WHERE activo = 1";
 
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();
@@ -26,7 +26,8 @@ public class UsuarioDAO {
                         rs.getString("correo"),
                         rs.getString("password"),
                         rs.getString("nombre"),
-                        rs.getString("rol")
+                        rs.getString("rol"),
+                        rs.getBoolean("activo")
                 );
                 lista.add(u);
             }
@@ -37,7 +38,7 @@ public class UsuarioDAO {
     }
 
     public boolean createUsuario(Usuario u) {
-        String sql = "INSERT INTO usuarios (correo, password, nombre, rol) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO usuarios (correo, password, nombre, rol, activo) VALUES (?, ?, ?, ?, 1)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
              
@@ -55,7 +56,7 @@ public class UsuarioDAO {
 
     public boolean updateUsuario(Usuario u) {
         // Actualizamos todos los datos. Si la password está vacía, no deberíamos actualizarla, pero para simplificar lo requeriremos todo.
-        String sql = "UPDATE usuarios SET correo = ?, password = ?, nombre = ?, rol = ? WHERE id = ?";
+        String sql = "UPDATE usuarios SET correo = ?, password = ?, nombre = ?, rol = ? WHERE id = ? AND activo = 1";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
              
@@ -72,21 +73,21 @@ public class UsuarioDAO {
         }
     }
 
-    public boolean deleteUsuario(int id) {
-        String sql = "DELETE FROM usuarios WHERE id = ?";
+    public boolean desactivarUsuario(int id) {
+        String sql = "UPDATE usuarios SET activo = 0 WHERE id = ? AND activo = 1";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
              
             pstmt.setInt(1, id);
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.out.println("Error eliminando usuario: " + e.getMessage());
+            System.out.println("Error desactivando usuario: " + e.getMessage());
             return false;
         }
     }
 
     public Usuario getByCorreo(String correo) {
-        String sql = "SELECT * FROM usuarios WHERE correo = ?";
+        String sql = "SELECT id, correo, password, nombre, rol, activo FROM usuarios WHERE correo = ? AND activo = 1";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
              
@@ -99,12 +100,26 @@ public class UsuarioDAO {
                         rs.getString("correo"),
                         rs.getString("password"),
                         rs.getString("nombre"),
-                        rs.getString("rol")
+                        rs.getString("rol"),
+                        rs.getBoolean("activo")
                 );
             }
         } catch (SQLException e) {
             System.out.println("Error obteniendo usuario por correo: " + e.getMessage());
         }
         return null;
+    }
+
+    public boolean deleteUsuario(int id) {
+        String sql = "DELETE FROM usuarios WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, id);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error eliminando usuario: " + e.getMessage());
+            return false;
+        }
     }
 }

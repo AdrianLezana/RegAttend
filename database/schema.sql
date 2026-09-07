@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS usuarios (
     correo TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
     nombre TEXT NOT NULL,
-    rol TEXT NOT NULL -- 'ADMIN' o 'EMPLEADO'
+    rol TEXT NOT NULL, -- 'ADMIN' o 'EMPLEADO'
+    activo INTEGER NOT NULL DEFAULT 1 -- 1 activo, 0 desactivado
 );
 
 CREATE TABLE IF NOT EXISTS asistencias (
@@ -20,5 +21,5 @@ CREATE TABLE IF NOT EXISTS asistencias (
 -- Insertar un usuario administrador por defecto para poder iniciar sesión
 -- La contraseña es 'admin123' y está hasheada con SHA-256
 -- SHA-256 de 'admin123' es '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9'
-INSERT OR IGNORE INTO usuarios (id, correo, password, nombre, rol) 
-VALUES (1, 'admin@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Administrador Principal', 'ADMIN');
+INSERT OR IGNORE INTO usuarios (id, correo, password, nombre, rol, activo)
+VALUES (1, 'admin@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Administrador Principal', 'ADMIN', 1);

@@ -1,9 +1,10 @@
 package com.example.regattend;
 
-import javafx.application.Application;
-
+/**
+ * Lanzador alternativo para evitar problemas de configuración de JavaFX en ciertos entornos/IDEs.
+ */
 public class Launcher {
     public static void main(String[] args) {
-        Application.launch(HelloApplication.class, args);
+        App.main(args);
     }
 }

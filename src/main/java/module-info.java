@@ -11,5 +11,4 @@ module com.example.regattend {
     opens com.example.regattend.model.entity to javafx.base; // Para el TableView
     
     exports com.example.regattend;
-    exports com.example.regattend.controller;
 }

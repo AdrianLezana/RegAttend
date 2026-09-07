@@ -200,7 +200,7 @@ public class UsuarioController implements Initializable {
 
         Optional<ButtonType> resultado = confirmacion.showAndWait();
         if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
-            boolean desactivado = usuarioDAO.deleteUsuario(usuarioSeleccionado.getId());
+            boolean desactivado = usuarioDAO.desactivarUsuario(usuarioSeleccionado.getId());
             if (desactivado) {
                 mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Usuario desactivado correctamente.");
                 cargarUsuarios();

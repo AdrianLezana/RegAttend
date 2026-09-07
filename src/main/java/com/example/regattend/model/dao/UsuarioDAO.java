@@ -73,7 +73,7 @@ public class UsuarioDAO {
         }
     }
 
-    public boolean deleteUsuario(int id) {
+    public boolean desactivarUsuario(int id) {
         String sql = "UPDATE usuarios SET activo = 0 WHERE id = ? AND activo = 1";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -108,5 +108,18 @@ public class UsuarioDAO {
             System.out.println("Error obteniendo usuario por correo: " + e.getMessage());
         }
         return null;
+    }
+
+    public boolean deleteUsuario(int id) {
+        String sql = "DELETE FROM usuarios WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, id);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Error eliminando usuario: " + e.getMessage());
+            return false;
+        }
     }
 }

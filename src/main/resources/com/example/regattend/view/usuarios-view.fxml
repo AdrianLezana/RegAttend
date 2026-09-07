@@ -106,7 +106,7 @@
                         </HBox>
                         <HBox spacing="10.0">
                            <children>
-                              <Button fx:id="btnEliminar" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onEliminar" styleClass="btn, btn-danger" text="Eliminar" HBox.hgrow="ALWAYS" />
+                              <Button fx:id="btnEliminar" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onEliminar" styleClass="btn, btn-danger" text="Desactivar" HBox.hgrow="ALWAYS" />
                               <Button fx:id="btnLimpiar" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onLimpiar" styleClass="btn, btn-secondary" text="Limpiar" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>

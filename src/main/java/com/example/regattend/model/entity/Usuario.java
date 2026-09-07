@@ -9,15 +9,21 @@ public class Usuario {
     private String password;
     private String nombre;
     private String rol; // 'ADMIN' o 'EMPLEADO'
+    private boolean activo;
 
     public Usuario() {}
 
     public Usuario(int id, String correo, String password, String nombre, String rol) {
+        this(id, correo, password, nombre, rol, true);
+    }
+
+    public Usuario(int id, String correo, String password, String nombre, String rol, boolean activo) {
         this.id = id;
         this.correo = correo;
         this.password = password;
         this.nombre = nombre;
         this.rol = rol;
+        this.activo = activo;
     }
 
     // Getters y Setters
@@ -35,6 +41,9 @@ public class Usuario {
 
     public String getRol() { return rol; }
     public void setRol(String rol) { this.rol = rol; }
+
+    public boolean isActivo() { return activo; }
+    public void setActivo(boolean activo) { this.activo = activo; }
 
     @Override
     public String toString() {

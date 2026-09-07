@@ -194,15 +194,15 @@ public class UsuarioController implements Initializable {
 
         // Confirmación previa
         Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmacion.setTitle("Confirmar Eliminación");
-        confirmacion.setHeaderText("¿Estás seguro de eliminar a " + usuarioSeleccionado.getNombre() + "?");
-        confirmacion.setContentText("Esta acción no se puede deshacer.");
+        confirmacion.setTitle("Confirmar Desactivación");
+        confirmacion.setHeaderText("¿Estás seguro de desactivar a " + usuarioSeleccionado.getNombre() + "?");
+        confirmacion.setContentText("El usuario se conservará en la base de datos y no podrá iniciar sesión.");
 
         Optional<ButtonType> resultado = confirmacion.showAndWait();
         if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
-            boolean eliminado = usuarioDAO.deleteUsuario(usuarioSeleccionado.getId());
-            if (eliminado) {
-                mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Usuario eliminado correctamente.");
+            boolean desactivado = usuarioDAO.deleteUsuario(usuarioSeleccionado.getId());
+            if (desactivado) {
+                mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "Usuario desactivado correctamente.");
                 cargarUsuarios();
                 limpiarCampos();
             } else {

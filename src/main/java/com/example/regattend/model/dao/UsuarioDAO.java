@@ -7,118 +7,96 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Data Access Object para gestionar los usuarios en la BD.
- */
-public class UsuarioDAO {
+public class UsuarioDAO implements IUsuarioDAO {
 
-    public List<Usuario> getAllUsuarios() {
-        List<Usuario> lista = new ArrayList<>();
-        String sql = "SELECT id, correo, password, nombre, rol, activo FROM usuarios WHERE activo = 1";
-
+    @Override
+    public boolean crear(Usuario usuario) {
+        String sql = "INSERT INTO usuarios (nombre, correo, password_hash, rol, activo) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, usuario.getNombre());
+            stmt.setString(2, usuario.getCorreo());
+            stmt.setString(3, usuario.getPasswordHash());
+            stmt.setString(4, usuario.getRol());
+            stmt.setBoolean(5, true);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-            while (rs.next()) {
-                Usuario u = new Usuario(
-                        rs.getInt("id"),
-                        rs.getString("correo"),
-                        rs.getString("password"),
-                        rs.getString("nombre"),
-                        rs.getString("rol"),
-                        rs.getBoolean("activo")
-                );
-                lista.add(u);
+    @Override
+    public Usuario buscarPorCorreo(String correo) {
+        String sql = "SELECT * FROM usuarios WHERE correo = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, correo);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Usuario u = new Usuario();
+                    u.setId(rs.getInt("id"));
+                    u.setNombre(rs.getString("nombre"));
+                    u.setCorreo(rs.getString("correo"));
+                    u.setPasswordHash(rs.getString("password_hash"));
+                    u.setRol(rs.getString("rol"));
+                    u.setActivo(rs.getBoolean("activo"));
+                    return u;
+                }
             }
         } catch (SQLException e) {
-            System.out.println("Error obteniendo usuarios: " + e.getMessage());
-        }
-        return lista;
-    }
-
-    public boolean createUsuario(Usuario u) {
-        String sql = "INSERT INTO usuarios (correo, password, nombre, rol, activo) VALUES (?, ?, ?, ?, 1)";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-             
-            pstmt.setString(1, u.getCorreo());
-            pstmt.setString(2, u.getPassword()); // Debe venir hasheada
-            pstmt.setString(3, u.getNombre());
-            pstmt.setString(4, u.getRol());
-            
-            return pstmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            System.out.println("Error creando usuario: " + e.getMessage());
-            return false;
-        }
-    }
-
-    public boolean updateUsuario(Usuario u) {
-        // Actualizamos todos los datos. Si la password está vacía, no deberíamos actualizarla, pero para simplificar lo requeriremos todo.
-        String sql = "UPDATE usuarios SET correo = ?, password = ?, nombre = ?, rol = ? WHERE id = ? AND activo = 1";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-             
-            pstmt.setString(1, u.getCorreo());
-            pstmt.setString(2, u.getPassword());
-            pstmt.setString(3, u.getNombre());
-            pstmt.setString(4, u.getRol());
-            pstmt.setInt(5, u.getId());
-            
-            return pstmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            System.out.println("Error actualizando usuario: " + e.getMessage());
-            return false;
-        }
-    }
-
-    public boolean desactivarUsuario(int id) {
-        String sql = "UPDATE usuarios SET activo = 0 WHERE id = ? AND activo = 1";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-             
-            pstmt.setInt(1, id);
-            return pstmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            System.out.println("Error desactivando usuario: " + e.getMessage());
-            return false;
-        }
-    }
-
-    public Usuario getByCorreo(String correo) {
-        String sql = "SELECT id, correo, password, nombre, rol, activo FROM usuarios WHERE correo = ? AND activo = 1";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-             
-            pstmt.setString(1, correo);
-            ResultSet rs = pstmt.executeQuery();
-            
-            if (rs.next()) {
-                return new Usuario(
-                        rs.getInt("id"),
-                        rs.getString("correo"),
-                        rs.getString("password"),
-                        rs.getString("nombre"),
-                        rs.getString("rol"),
-                        rs.getBoolean("activo")
-                );
-            }
-        } catch (SQLException e) {
-            System.out.println("Error obteniendo usuario por correo: " + e.getMessage());
+            e.printStackTrace();
         }
         return null;
     }
 
-    public boolean deleteUsuario(int id) {
-        String sql = "DELETE FROM usuarios WHERE id = ?";
+    @Override
+    public List<Usuario> listarActivos() {
+        List<Usuario> usuarios = new ArrayList<>();
+        String sql = "SELECT * FROM usuarios WHERE activo = 1";
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setInt(1, id);
-            return pstmt.executeUpdate() > 0;
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                Usuario u = new Usuario();
+                u.setId(rs.getInt("id"));
+                u.setNombre(rs.getString("nombre"));
+                u.setCorreo(rs.getString("correo"));
+                u.setRol(rs.getString("rol"));
+                u.setActivo(true);
+                usuarios.add(u);
+            }
         } catch (SQLException e) {
-            System.out.println("Error eliminando usuario: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return usuarios;
+    }
+
+    @Override
+    public boolean actualizar(Usuario usuario) {
+        String sql = "UPDATE usuarios SET nombre = ?, correo = ?, rol = ? WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, usuario.getNombre());
+            stmt.setString(2, usuario.getCorreo());
+            stmt.setString(3, usuario.getRol());
+            stmt.setInt(4, usuario.getId());
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean desactivar(int id) {
+        String sql = "UPDATE usuarios SET activo = 0 WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
             return false;
         }
     }

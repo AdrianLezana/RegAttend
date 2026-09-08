@@ -1,25 +1,37 @@
--- Script de creación de BD y tablas para RegAttend
--- Base de datos: SQLite
+-- 1. Eliminar tablas previas en caso de reinicio limpio (orden inverso por FK)
+DROP TABLE IF EXISTS asistencias;
+DROP TABLE IF EXISTS usuarios;
 
-CREATE TABLE IF NOT EXISTS usuarios (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    correo TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL,
-    nombre TEXT NOT NULL,
-    rol TEXT NOT NULL, -- 'ADMIN' o 'EMPLEADO'
-    activo INTEGER NOT NULL DEFAULT 1 -- 1 activo, 0 desactivado
+-- 2. Crear tabla de Usuarios
+CREATE TABLE usuarios (
+                          id INTEGER PRIMARY KEY AUTOINCREMENT,
+                          nombre TEXT NOT NULL,
+                          correo TEXT NOT NULL UNIQUE,
+                          password_hash TEXT NOT NULL,
+                          rol TEXT NOT NULL DEFAULT 'EMPLEADO',
+                          activo INTEGER NOT NULL DEFAULT 1,
+                          fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS asistencias (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    usuario_id INTEGER NOT NULL,
-    tipo TEXT NOT NULL, -- 'ENTRADA' o 'SALIDA'
-    fecha_hora DATETIME NOT NULL,
-    FOREIGN KEY(usuario_id) REFERENCES usuarios(id)
+-- 3. Crear tabla de Asistencias
+CREATE TABLE asistencias (
+                             id INTEGER PRIMARY KEY AUTOINCREMENT,
+                             usuario_id INTEGER NOT NULL,
+                             fecha TEXT NOT NULL,
+                             hora_entrada TEXT NULL,
+                             hora_salida TEXT NULL,
+                             CONSTRAINT fk_asistencia_usuario
+                                 FOREIGN KEY (usuario_id)
+                                     REFERENCES usuarios(id)
+                                     ON UPDATE CASCADE
+                                     ON DELETE RESTRICT,
+                             CONSTRAINT uq_usuario_fecha
+                                 UNIQUE (usuario_id, fecha)
 );
 
--- Insertar un usuario administrador por defecto para poder iniciar sesión
--- La contraseña es 'admin123' y está hasheada con SHA-256
--- SHA-256 de 'admin123' es '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9'
-INSERT OR IGNORE INTO usuarios (id, correo, password, nombre, rol, activo)
-VALUES (1, 'admin@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Administrador Principal', 'ADMIN', 1);
+-- 4. Crear índice para optimizar consultas y reportes por rangos de fecha
+CREATE INDEX idx_asistencia_fecha ON asistencias(fecha);
+
+-- 5. Insertar usuario administrador por defecto (Contraseña: admin123)
+INSERT INTO usuarios (nombre, correo, password_hash, rol, activo)
+VALUES ('Administrador General', 'admin@regattend.com', 'admin123', 'ADMIN', 1);

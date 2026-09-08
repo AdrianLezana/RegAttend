@@ -2,6 +2,7 @@ package com.example.regattend.controller;
 
 import com.example.regattend.model.entity.Usuario;
 import com.example.regattend.service.AsistenciaService;
+import com.example.regattend.service.ReporteExportService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -15,8 +16,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
@@ -49,6 +52,24 @@ public class ReporteController implements Initializable {
                 asistenciaService.obtenerInasistenciasDelDia(fecha)
         );
         tablaInasistencias.setItems(listaInasistentes);
+    }
+
+    @FXML
+    private void handleExportarCsv(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Guardar Reporte CSV");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos CSV (*.csv)", "*.csv"));
+        fileChooser.setInitialFileName("reporte_inasistencias_" + LocalDate.now() + ".csv");
+
+        File archivo = fileChooser.showSaveDialog(tablaInasistencias.getScene().getWindow());
+        if (archivo != null) {
+            boolean exito = ReporteExportService.exportarInasistenciasCsv(archivo.getAbsolutePath(), tablaInasistencias.getItems());
+            if (exito) {
+                lblFechaReporte.setText("Reporte exportado exitosamente a: " + archivo.getName());
+            } else {
+                lblFechaReporte.setText("Error al exportar el archivo CSV.");
+            }
+        }
     }
 
     @FXML

@@ -27,6 +27,7 @@ public class UsuarioController implements Initializable {
 
     @FXML private Label lblBienvenida;
     @FXML private Button btnIrReportes;
+    @FXML private Button btnDesactivarUsuario;
     @FXML private TableView<Usuario> tablaUsuarios;
     @FXML private TableColumn<Usuario, Integer> colId;
     @FXML private TableColumn<Usuario, String> colNombre;
@@ -41,10 +42,14 @@ public class UsuarioController implements Initializable {
         if (actual != null) {
             lblBienvenida.setText("Usuario: " + actual.getNombre() + " (" + actual.getRol() + ")");
 
-            // Restringir el botón de reportes solo a administradores
+            // Restringir el panel de reportes y baja de usuarios solo a administradores
             if (!"ADMIN".equalsIgnoreCase(actual.getRol())) {
                 btnIrReportes.setVisible(false);
                 btnIrReportes.setManaged(false);
+                if (btnDesactivarUsuario != null) {
+                    btnDesactivarUsuario.setVisible(false);
+                    btnDesactivarUsuario.setManaged(false);
+                }
             }
         }
 
@@ -59,6 +64,29 @@ public class UsuarioController implements Initializable {
     private void cargarUsuarios() {
         ObservableList<Usuario> lista = FXCollections.observableArrayList(usuarioDAO.listarActivos());
         tablaUsuarios.setItems(lista);
+    }
+
+    @FXML
+    private void handleDesactivarUsuario(ActionEvent event) {
+        Usuario seleccionado = tablaUsuarios.getSelectionModel().getSelectedItem();
+        if (seleccionado == null) {
+            lblBienvenida.setText("Por favor, seleccione un trabajador de la tabla.");
+            return;
+        }
+
+        // Proteger al administrador principal del sistema (ID 1)
+        if (seleccionado.getId() == 1) {
+            lblBienvenida.setText("No se puede desactivar al Administrador General.");
+            return;
+        }
+
+        boolean exito = usuarioDAO.desactivar(seleccionado.getId());
+        if (exito) {
+            cargarUsuarios();
+            lblBienvenida.setText("Trabajador desactivado correctamente.");
+        } else {
+            lblBienvenida.setText("Error al desactivar al trabajador.");
+        }
     }
 
     @FXML

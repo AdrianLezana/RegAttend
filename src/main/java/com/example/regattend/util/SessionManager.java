@@ -16,4 +16,8 @@ public class SessionManager {
     public static void cerrarSesion() {
         usuarioActual = null;
     }
+
+    public static boolean esAdministrador() {
+        return usuarioActual != null && "ADMIN".equalsIgnoreCase(usuarioActual.getRol());
+    }
 }

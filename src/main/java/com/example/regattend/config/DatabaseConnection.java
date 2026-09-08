@@ -1,5 +1,7 @@
 package com.example.regattend.config;
 
+import com.example.regattend.util.PasswordHasher;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -14,7 +16,7 @@ public class DatabaseConnection {
     public static Connection getConnection() throws SQLException {
         if (instance == null || instance.isClosed()) {
             instance = DriverManager.getConnection(URL);
-            inicializarBaseDeDatos(instance); // <--- Activa y crea las tablas automáticamente
+            inicializarBaseDeDatos(instance);
         }
         return instance;
     }
@@ -38,8 +40,10 @@ public class DatabaseConnection {
                 "CONSTRAINT fk_asistencia_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id), " +
                 "CONSTRAINT uq_usuario_fecha UNIQUE (usuario_id, fecha));";
 
+        // Hash precalculado para 'admin123' con SHA-256
+        String adminPasswordHash = PasswordHasher.hashPassword("admin123");
         String sqlAdminDefault = "INSERT OR IGNORE INTO usuarios (id, nombre, correo, password_hash, rol, activo) " +
-                "VALUES (1, 'Administrador General', 'admin@regattend.com', 'admin123', 'ADMIN', 1);";
+                "VALUES (1, 'Administrador General', 'admin@regattend.com', '" + adminPasswordHash + "', 'ADMIN', 1);";
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sqlUsuarios);

@@ -1,52 +1,59 @@
 package com.example.regattend.model.entity;
 
-/**
- * Clase que representa un Usuario en el sistema.
- */
 public class Usuario {
     private int id;
-    private String correo;
-    private String password;
     private String nombre;
-    private String rol; // 'ADMIN' o 'EMPLEADO'
+    private String correo;
+    private String rol;
     private boolean activo;
 
-    public Usuario() {}
-
-    public Usuario(int id, String correo, String password, String nombre, String rol) {
-        this(id, correo, password, nombre, rol, true);
-    }
-
-    public Usuario(int id, String correo, String password, String nombre, String rol, boolean activo) {
+    public Usuario(int id, String nombre, String correo, String rol, boolean activo) {
         this.id = id;
-        this.correo = correo;
-        this.password = password;
         this.nombre = nombre;
+        this.correo = correo;
         this.rol = rol;
         this.activo = activo;
     }
 
-    // Getters y Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    // --- GETTERS ---
+    public int getId() {
+        return id;
+    }
 
-    public String getCorreo() { return correo; }
-    public void setCorreo(String correo) { this.correo = correo; }
+    public String getNombre() {
+        return nombre;
+    }
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    public String getCorreo() {
+        return correo;
+    }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getRol() {
+        return rol;
+    }
 
-    public String getRol() { return rol; }
-    public void setRol(String rol) { this.rol = rol; }
+    public boolean isActivo() {
+        return activo;
+    }
 
-    public boolean isActivo() { return activo; }
-    public void setActivo(boolean activo) { this.activo = activo; }
+    // --- SETTERS ---
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    @Override
-    public String toString() {
-        return nombre + " (" + correo + ") - " + rol;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
 }

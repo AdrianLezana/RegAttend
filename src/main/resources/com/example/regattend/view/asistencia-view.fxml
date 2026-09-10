@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" spacing="30.0" style="-fx-background-color: linear-gradient(to bottom, #fdfbfb, #ebedee); -fx-padding: 40;" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.regattend.controller.AsistenciaController">
+
+    <Label text="Control de Asistencia" style="-fx-text-fill: #333333;">
+        <font><Font name="System Bold" size="28.0" /></font>
+    </Label>
+
+    <HBox alignment="CENTER" spacing="30.0">
+        <Button text="ENTRADA" onAction="#marcarEntrada" style="-fx-background-color: #00b09b; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18px; -fx-background-radius: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);" prefWidth="160" prefHeight="80"/>
+
+        <Button text="SALIDA" onAction="#marcarSalida" style="-fx-background-color: #ff5f6d; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18px; -fx-background-radius: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 5);" prefWidth="160" prefHeight="80"/>
+    </HBox>
+
+    <Button text="Cerrar Sesión" onAction="#cerrarSesion" style="-fx-background-color: transparent; -fx-text-fill: #888888; -fx-underline: true; -fx-margin-top: 20px;"/>
+</VBox>

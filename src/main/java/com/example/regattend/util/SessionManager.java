@@ -1,22 +1,19 @@
 package com.example.regattend.util;
-
 import com.example.regattend.model.entity.Usuario;
 
-/**
- * Almacena el usuario autenticado actualmente en el sistema.
- */
 public class SessionManager {
-    private static Usuario currentUser;
+    private static SessionManager instance;
+    private Usuario usuarioActual;
 
-    public static void setCurrentUser(Usuario user) {
-        currentUser = user;
+    private SessionManager() {}
+
+    public static SessionManager getInstance() {
+        if (instance == null) { instance = new SessionManager(); }
+        return instance;
     }
 
-    public static Usuario getCurrentUser() {
-        return currentUser;
-    }
-
-    public static void clearSession() {
-        currentUser = null;
-    }
+    public void setUsuarioActual(Usuario usuario) { this.usuarioActual = usuario; }
+    public Usuario getUsuarioActual() { return usuarioActual; }
+    public void cerrarSesion() { usuarioActual = null; }
+    public boolean isAdministrador() { return usuarioActual != null && "ADMIN".equals(usuarioActual.getRol()); }
 }

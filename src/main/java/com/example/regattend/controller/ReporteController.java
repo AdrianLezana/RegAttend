@@ -68,4 +68,16 @@ public class ReporteController {
             }
         }
     }
+
+    // Este método se ejecuta automáticamente al abrir la ventana
+    @FXML
+    public void initialize() {
+        cargarHistorialCompleto();
+    }
+
+    // Nuevo método para el botón "Ver Todo"
+    @FXML
+    void cargarHistorialCompleto() {
+        tablaReportes.setItems(FXCollections.observableArrayList(asistenciaDAO.obtenerHistorialCompleto()));
+    }
 }

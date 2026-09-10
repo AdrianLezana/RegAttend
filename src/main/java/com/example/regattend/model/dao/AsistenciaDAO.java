@@ -30,17 +30,19 @@ public class AsistenciaDAO {
         // Obtenemos la fecha de hoy en formato YYYY-MM-DD
         String fechaHoy = java.time.LocalDate.now().toString();
 
-        String sql = "SELECT COUNT(*) FROM asistencias WHERE usuario_id = ? AND accion = ? AND date(fecha_hora) = ?";
+        // Usamos LIKE para buscar cualquier hora dentro de esa fecha
+        String sql = "SELECT COUNT(*) FROM asistencias WHERE usuario_id = ? AND accion = ? AND fecha_hora LIKE ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, usuarioId);
-            pstmt.setString(2, fechaHoy);
+            pstmt.setString(2, accion);
+            pstmt.setString(3, fechaHoy + "%");
 
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                return rs.getInt(1) > 0; // Si el conteo es mayor a 0, ya marcó.
+                return rs.getInt(1) > 0;
             }
         } catch (SQLException e) {
             e.printStackTrace();

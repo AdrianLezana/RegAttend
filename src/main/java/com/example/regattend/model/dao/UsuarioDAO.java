@@ -2,6 +2,8 @@ package com.example.regattend.model.dao;
 
 import com.example.regattend.config.DatabaseConnection;
 import com.example.regattend.model.entity.Usuario;
+import com.example.regattend.util.PasswordHasher; // Importación obligatoria
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +14,10 @@ public class UsuarioDAO {
         String sql = "SELECT * FROM usuarios WHERE correo = ? AND password = ? AND activo = 1";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             pstmt.setString(1, correo);
-            pstmt.setString(2, password);
+            pstmt.setString(2, PasswordHasher.hashPassword(password));
+
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 return new Usuario(rs.getInt("id"), rs.getString("nombre"), rs.getString("correo"), rs.getString("rol"), rs.getBoolean("activo"));
@@ -39,10 +43,12 @@ public class UsuarioDAO {
         String sql = "INSERT INTO usuarios (nombre, correo, password, rol, activo) VALUES (?, ?, ?, ?, 1)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             pstmt.setString(1, nombre);
             pstmt.setString(2, correo);
-            pstmt.setString(3, password);
+            pstmt.setString(3, PasswordHasher.hashPassword(password));
             pstmt.setString(4, rol);
+
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) { return false; }
     }

@@ -2,6 +2,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 
 <VBox spacing="20.0" style="-fx-background-color: #ffffff; -fx-padding: 30;" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.regattend.controller.ReporteController">
 
@@ -18,7 +19,23 @@
         <Button text="Atrasos (> 09:30)" onAction="#generarReporteAtrasos" style="-fx-background-color: #f2994a; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;" prefHeight="40" prefWidth="180"/>
         <Button text="Salidas Anticipadas" onAction="#generarReporteSalidasAnticipadas" style="-fx-background-color: #eb5757; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;" prefHeight="40" prefWidth="180"/>
         <Button text="Inasistencias (Hoy)" onAction="#generarReporteInasistencias" style="-fx-background-color: #56ccf2; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;" prefHeight="40" prefWidth="180"/>
+        <Button text="Exportar a Excel" onAction="#exportarExcel" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;" prefHeight="40" prefWidth="150"/>
     </HBox>
 
-    <ListView fx:id="listViewReportes" VBox.vgrow="ALWAYS" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #e0e0e0; -fx-font-size: 15px; -fx-padding: 5;"/>
+    <TableView fx:id="tablaReportes" VBox.vgrow="ALWAYS" style="-fx-background-radius: 10; -fx-font-size: 14px;">
+        <columns>
+            <TableColumn fx:id="colNombre" text="Nombre Empleado" prefWidth="250">
+                <cellValueFactory><PropertyValueFactory property="nombre" /></cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="colFecha" text="Fecha" prefWidth="120">
+                <cellValueFactory><PropertyValueFactory property="fecha" /></cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="colHora" text="Hora" prefWidth="120">
+                <cellValueFactory><PropertyValueFactory property="hora" /></cellValueFactory>
+            </TableColumn>
+            <TableColumn fx:id="colDetalle" text="Detalle" prefWidth="200">
+                <cellValueFactory><PropertyValueFactory property="detalle" /></cellValueFactory>
+            </TableColumn>
+        </columns>
+    </TableView>
 </VBox>

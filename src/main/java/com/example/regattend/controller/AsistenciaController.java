@@ -13,10 +13,24 @@ public class AsistenciaController {
 
     private void registrar(String accion) {
         int id = SessionManager.getInstance().getUsuarioActual().getId();
+
+        // Validar que no repita la misma acción el mismo día
+        if (asistenciaDAO.yaMarcoHoy(id, accion)) {
+            new Alert(Alert.AlertType.WARNING, "Ya registraste tu " + accion + " el día de hoy.").show();
+            return;
+        }
+
+        // Validar orden lógico: No puede salir si no ha entrado
+        if (accion.equals("SALIDA") && !asistenciaDAO.yaMarcoHoy(id, "ENTRADA")) {
+            new Alert(Alert.AlertType.WARNING, "Debes registrar tu ENTRADA antes de poder registrar la SALIDA.").show();
+            return;
+        }
+
+        // Ejecutar el registro
         if (asistenciaDAO.registrarAsistencia(id, accion)) {
             new Alert(Alert.AlertType.INFORMATION, accion + " registrada con éxito.").show();
         } else {
-            new Alert(Alert.AlertType.ERROR, "Error al registrar.").show();
+            new Alert(Alert.AlertType.ERROR, "Error al guardar el registro en el sistema.").show();
         }
     }
 

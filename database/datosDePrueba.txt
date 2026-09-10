@@ -1,0 +1,99 @@
+-- Script de creación de BD y tablas para RegAttend
+-- Base de datos: SQLite
+
+CREATE TABLE IF NOT EXISTS usuarios (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    correo TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    nombre TEXT NOT NULL,
+    rol TEXT NOT NULL -- 'ADMIN' o 'EMPLEADO'
+);
+
+CREATE TABLE IF NOT EXISTS asistencias (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    usuario_id INTEGER NOT NULL,
+    tipo TEXT NOT NULL, -- 'ENTRADA' o 'SALIDA'
+    fecha_hora DATETIME NOT NULL,
+    FOREIGN KEY(usuario_id) REFERENCES usuarios(id)
+);
+
+-- Insertar un usuario administrador por defecto para poder iniciar sesión
+-- La contraseña es 'admin123' y está hasheada con SHA-256
+-- SHA-256 de 'admin123' es '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9'
+INSERT OR IGNORE INTO usuarios (id, correo, password, nombre, rol) 
+VALUES (1, 'admin@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Administrador Principal', 'ADMIN');
+
+-- =========================================================================
+-- 1. INSERTAR 24 EMPLEADOS (IDs del 2 al 25)
+-- Todos usan el hash SHA-256 de la contraseña 'admin123'
+-- =========================================================================
+
+INSERT INTO usuarios (id, correo, password, nombre, rol, activo) VALUES
+(2, 'j.perez@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Juan Pérez', 'EMPLEADO', 1),
+(3, 'm.gonzalez@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'María González', 'EMPLEADO', 1),
+(4, 'c.soto@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Camila Soto', 'EMPLEADO', 1),
+(5, 'p.rojas@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Pedro Rojas', 'EMPLEADO', 1),
+(6, 'd.contreras@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Daniela Contreras', 'EMPLEADO', 1),
+(7, 'f.tapia@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Felipe Tapia', 'EMPLEADO', 1),
+(8, 'v.silva@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Valentina Silva', 'EMPLEADO', 1),
+(9, 'm.castillo@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Matías Castillo', 'EMPLEADO', 1),
+(10, 'a.sepulveda@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Andrea Sepúlveda', 'EMPLEADO', 1),
+(11, 'j.morales@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Javier Morales', 'EMPLEADO', 1),
+(12, 'p.fuentes@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Paula Fuentes', 'EMPLEADO', 1),
+(13, 'n.herrera@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Nicolás Herrera', 'EMPLEADO', 1),
+(14, 's.munoz@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Sofía Muñoz', 'EMPLEADO', 1),
+(15, 'd.flores@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Diego Flores', 'EMPLEADO', 1),
+(16, 'c.martinez@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Carolina Martínez', 'EMPLEADO', 1),
+(17, 'b.vega@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Bastián Vega', 'EMPLEADO', 1),
+(18, 'l.gomez@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Loreto Gómez', 'EMPLEADO', 1),
+(19, 'h.cruz@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Héctor Cruz', 'EMPLEADO', 1),
+(20, 'r.salazar@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Romina Salazar', 'EMPLEADO', 1),
+(21, 'g.paredes@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Gabriel Paredes', 'EMPLEADO', 1),
+(22, 'a.mendez@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Ana Méndez', 'EMPLEADO', 1),
+(23, 'e.navarro@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Esteban Navarro', 'EMPLEADO', 1),
+(24, 't.valenzuela@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Teresa Valenzuela', 'EMPLEADO', 1),
+(25, 'i.carrasco@regattend.cl', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'Ignacio Carrasco', 'EMPLEADO', 1);
+
+-- =========================================================================
+-- 2. INSERTAR ASISTENCIAS (SIMULACIÓN PARA EL 10-09-2026)
+-- =========================================================================
+
+-- ESCENARIO 1: Llegada a la hora (<= 09:30) y Salida a la hora (>= 17:30)
+-- Afecta a los IDs del 2 al 9 (8 empleados). No aparecerán en Atrasos ni Anticipadas.
+INSERT INTO asistencias (usuario_id, accion, fecha_hora) VALUES
+(2, 'ENTRADA', '2026-09-10 09:15:00'), (2, 'SALIDA', '2026-09-10 17:35:00'),
+(3, 'ENTRADA', '2026-09-10 08:50:00'), (3, 'SALIDA', '2026-09-10 18:00:00'),
+(4, 'ENTRADA', '2026-09-10 09:25:00'), (4, 'SALIDA', '2026-09-10 17:30:01'),
+(5, 'ENTRADA', '2026-09-10 09:00:00'), (5, 'SALIDA', '2026-09-10 17:45:00'),
+(6, 'ENTRADA', '2026-09-10 09:29:50'), (6, 'SALIDA', '2026-09-10 18:15:00'),
+(7, 'ENTRADA', '2026-09-10 08:45:00'), (7, 'SALIDA', '2026-09-10 17:50:00'),
+(8, 'ENTRADA', '2026-09-10 09:10:00'), (8, 'SALIDA', '2026-09-10 17:40:00'),
+(9, 'ENTRADA', '2026-09-10 09:20:00'), (9, 'SALIDA', '2026-09-10 17:31:00');
+
+-- ESCENARIO 2: Atrasados (> 09:30) y Salida a la hora (>= 17:30)
+-- Afecta a los IDs del 10 al 14 (5 empleados). Aparecerán en Reporte de Atrasos.
+INSERT INTO asistencias (usuario_id, accion, fecha_hora) VALUES
+(10, 'ENTRADA', '2026-09-10 09:45:00'), (10, 'SALIDA', '2026-09-10 17:40:00'),
+(11, 'ENTRADA', '2026-09-10 10:15:00'), (11, 'SALIDA', '2026-09-10 18:00:00'),
+(12, 'ENTRADA', '2026-09-10 09:35:00'), (12, 'SALIDA', '2026-09-10 17:35:00'),
+(13, 'ENTRADA', '2026-09-10 11:00:00'), (13, 'SALIDA', '2026-09-10 18:20:00'),
+(14, 'ENTRADA', '2026-09-10 09:31:00'), (14, 'SALIDA', '2026-09-10 17:55:00');
+
+-- ESCENARIO 3: Llegada a la hora (<= 09:30) y Salida Anticipada (< 17:30)
+-- Afecta a los IDs del 15 al 18 (4 empleados). Aparecerán en Salidas Anticipadas.
+INSERT INTO asistencias (usuario_id, accion, fecha_hora) VALUES
+(15, 'ENTRADA', '2026-09-10 09:10:00'), (15, 'SALIDA', '2026-09-10 16:30:00'),
+(16, 'ENTRADA', '2026-09-10 08:55:00'), (16, 'SALIDA', '2026-09-10 17:00:00'),
+(17, 'ENTRADA', '2026-09-10 09:20:00'), (17, 'SALIDA', '2026-09-10 14:00:00'),
+(18, 'ENTRADA', '2026-09-10 09:05:00'), (18, 'SALIDA', '2026-09-10 17:15:00');
+
+-- ESCENARIO 4: Atrasados (> 09:30) y Salida Anticipada (< 17:30)
+-- Afecta a los IDs del 19 al 21 (3 empleados). Aparecerán en ambos reportes (Atraso y Salida Anticipada).
+INSERT INTO asistencias (usuario_id, accion, fecha_hora) VALUES
+(19, 'ENTRADA', '2026-09-10 10:00:00'), (19, 'SALIDA', '2026-09-10 15:00:00'),
+(20, 'ENTRADA', '2026-09-10 11:30:00'), (20, 'SALIDA', '2026-09-10 16:45:00'),
+(21, 'ENTRADA', '2026-09-10 09:40:00'), (21, 'SALIDA', '2026-09-10 17:29:00');
+
+-- ESCENARIO 5: Inasistencias (No se presentan a trabajar)
+-- Afecta a los IDs del 22 al 25 (4 empleados). Aparecerán en el Reporte de Inasistencias.
+-- (No insertamos ningún registro en 'asistencias' para ellos con fecha de hoy).

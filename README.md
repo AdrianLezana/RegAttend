@@ -16,7 +16,7 @@ MVP de escritorio para el control de asistencia de empleados y generación de re
 ## Requerimientos del Sistema (Avance 2)
 
 * **GU-01 al GU-03:** Base de datos preparada para CRUD de usuarios.
-* **Modelo Relacional:** Script de creación de base de datos (`database/schema.sql` y `database/schema.txt`).
+* **Modelo Relacional:** Script de creación de base de datos (`database/schema.sql` y `database/datosDePrueba.txt`).
 * **Conexión:** Verificación de conexión en Java mediante `DatabaseConnection.java`.
 
 ---

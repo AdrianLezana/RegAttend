@@ -37,6 +37,18 @@ build/
 .DS_Store
 Thumbs.db
 ehthumbs.db
-# Ignorar documentos
+
+### Documentos ###
 docs/
 *.docx
+
+### Bases de Datos (Agregado para SQLite) ###
+*.db
+*.sqlite
+*.sqlite3
+regattend.db
+
+### Reportes Generados (Agregado para Excel/PDF) ###
+*.xlsx
+*.csv
+*.pdf

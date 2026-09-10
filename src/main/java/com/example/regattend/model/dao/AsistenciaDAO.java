@@ -92,4 +92,28 @@ public class AsistenciaDAO {
         } catch (SQLException e) { e.printStackTrace(); }
         return reporte;
     }
+
+    /**
+     * Carga todos los registros de asistencia sin aplicar filtros de atrasos o salidas.
+     */
+    public List<ReporteItem> obtenerHistorialCompleto() {
+        List<ReporteItem> reporte = new ArrayList<>();
+        // Ordenamos por fecha y hora descendente (los más recientes primero)
+        String sql = "SELECT u.nombre, date(a.fecha_hora) as fecha, strftime('%H:%M:%S', a.fecha_hora) as hora, a.accion " +
+                "FROM asistencias a JOIN usuarios u ON a.usuario_id = u.id " +
+                "ORDER BY a.fecha_hora DESC";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                // El detalle será simplemente si fue "ENTRADA" o "SALIDA"
+                reporte.add(new ReporteItem(rs.getString("nombre"), rs.getString("fecha"), rs.getString("hora"), rs.getString("accion")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return reporte;
+    }
 }

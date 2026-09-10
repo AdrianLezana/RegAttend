@@ -16,9 +16,15 @@
     </HBox>
 
     <HBox spacing="15.0" alignment="CENTER">
-        <Button text="Atrasos (> 09:30)" onAction="#generarReporteAtrasos" style="-fx-background-color: #f2994a; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;" prefHeight="40" prefWidth="180"/>
-        <Button text="Salidas Anticipadas" onAction="#generarReporteSalidasAnticipadas" style="-fx-background-color: #eb5757; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;" prefHeight="40" prefWidth="180"/>
-        <Button text="Inasistencias (Hoy)" onAction="#generarReporteInasistencias" style="-fx-background-color: #56ccf2; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;" prefHeight="40" prefWidth="180"/>
+        <!-- Botón para limpiar filtros -->
+        <Button text="Ver Todos" onAction="#cargarHistorialCompleto" style="-fx-background-color: #7f8c8d; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;" prefHeight="40" prefWidth="120"/>
+
+
+        <Button text="Atrasos (> 09:30)" onAction="#generarReporteAtrasos" style="-fx-background-color: #f2994a; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;" prefHeight="40" prefWidth="150"/>
+        <Button text="Salidas Anticipadas" onAction="#generarReporteSalidasAnticipadas" style="-fx-background-color: #eb5757; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;" prefHeight="40" prefWidth="150"/>
+        <Button text="Inasistencias (Hoy)" onAction="#generarReporteInasistencias" style="-fx-background-color: #56ccf2; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;" prefHeight="40" prefWidth="150"/>
+
+        <!-- Botón de Excel -->
         <Button text="Exportar a Excel" onAction="#exportarExcel" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;" prefHeight="40" prefWidth="150"/>
     </HBox>
 

@@ -1,83 +1,67 @@
 package com.example.regattend.controller;
 
+import com.example.regattend.App;
 import com.example.regattend.model.dao.UsuarioDAO;
 import com.example.regattend.model.entity.Usuario;
-import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
-
-public class UsuarioFormController implements Initializable {
-
+public class UsuarioFormController {
+    @FXML private Label lblTitulo;
     @FXML private TextField txtNombre;
     @FXML private TextField txtCorreo;
     @FXML private PasswordField txtPassword;
-    @FXML private ComboBox<String> cmbRol;
-    @FXML private Label lblMensaje;
+    @FXML private ComboBox<String> cbRol;
 
-    private final UsuarioDAO usuarioDAO = new UsuarioDAO();
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        cmbRol.setItems(FXCollections.observableArrayList("ADMIN", "EMPLEADO"));
-        cmbRol.setValue("EMPLEADO");
-    }
+    private UsuarioDAO usuarioDAO = new UsuarioDAO();
+    public static Usuario usuarioAEditar = null;
 
     @FXML
-    private void handleGuardar(ActionEvent event) {
-        String nombre = txtNombre.getText().trim();
-        String correo = txtCorreo.getText().trim();
-        String password = txtPassword.getText();
-        String rol = cmbRol.getValue();
+    public void initialize() {
+        cbRol.getItems().addAll("EMPLEADO", "ADMIN");
 
-        if (nombre.isEmpty() || correo.isEmpty() || password.isEmpty()) {
-            lblMensaje.setText("Por favor, complete todos los campos.");
+        if (usuarioAEditar != null) {
+            lblTitulo.setText("Editar Usuario");
+            txtNombre.setText(usuarioAEditar.getNombre());
+            txtCorreo.setText(usuarioAEditar.getCorreo());
+            cbRol.setValue(usuarioAEditar.getRol());
+            txtPassword.setDisable(true); // No cambiamos la pass en edición básica
+        } else {
+            lblTitulo.setText("Nuevo Usuario");
+        }
+    }
+
+    @FXML void guardarUsuario() throws Exception {
+        String nombre = txtNombre.getText();
+        String correo = txtCorreo.getText();
+        String rol = cbRol.getValue();
+
+        if (nombre.isEmpty() || correo.isEmpty() || rol == null) {
+            new Alert(Alert.AlertType.ERROR, "Llene los campos obligatorios").show();
             return;
         }
 
-        Usuario nuevo = new Usuario();
-        nuevo.setNombre(nombre);
-        nuevo.setCorreo(correo);
-        nuevo.setPasswordHash(password); // En etapas iniciales se almacena directo, escalable a hash
-        nuevo.setRol(rol);
-        nuevo.setActivo(true);
-
-        boolean exito = usuarioDAO.crear(nuevo);
-        if (exito) {
-            regresarAlPanel(event);
+        boolean exito;
+        if (usuarioAEditar == null) {
+            String pass = txtPassword.getText();
+            exito = usuarioDAO.crearUsuario(nombre, correo, pass, rol);
         } else {
-            lblMensaje.setText("Error al registrar usuario (correo duplicado o fallo de BD).");
+            exito = usuarioDAO.actualizarUsuario(usuarioAEditar.getId(), nombre, correo, rol);
+        }
+
+        if (exito) {
+            new Alert(Alert.AlertType.INFORMATION, "Usuario guardado correctamente").show();
+            App.setRoot("view/usuarios-view");
+        } else {
+            new Alert(Alert.AlertType.ERROR, "Error al guardar en la base de datos").show();
         }
     }
 
-    @FXML
-    private void handleCancelar(ActionEvent event) {
-        regresarAlPanel(event);
-    }
-
-    private void regresarAlPanel(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/regattend/view/usuarios-view.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("RegAttend - Panel Principal");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    @FXML void cancelar() throws Exception {
+        App.setRoot("view/usuarios-view");
     }
 }

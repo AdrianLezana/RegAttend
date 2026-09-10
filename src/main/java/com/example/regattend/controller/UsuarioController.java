@@ -1,120 +1,54 @@
 package com.example.regattend.controller;
 
+import com.example.regattend.App;
 import com.example.regattend.model.dao.UsuarioDAO;
 import com.example.regattend.model.entity.Usuario;
-import com.example.regattend.util.SessionManager;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
-
-public class UsuarioController implements Initializable {
-
-    @FXML private Label lblBienvenida;
-    @FXML private Button btnIrReportes;
-    @FXML private Button btnDesactivarUsuario;
+public class UsuarioController {
     @FXML private TableView<Usuario> tablaUsuarios;
-    @FXML private TableColumn<Usuario, Integer> colId;
-    @FXML private TableColumn<Usuario, String> colNombre;
-    @FXML private TableColumn<Usuario, String> colCorreo;
-    @FXML private TableColumn<Usuario, String> colRol;
+    private UsuarioDAO usuarioDAO = new UsuarioDAO();
 
-    private final UsuarioDAO usuarioDAO = new UsuarioDAO();
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        Usuario actual = SessionManager.getUsuarioActual();
-        if (actual != null) {
-            lblBienvenida.setText("Usuario: " + actual.getNombre() + " (" + actual.getRol() + ")");
-
-            // Restringir el panel de reportes y baja de usuarios solo a administradores
-            if (!"ADMIN".equalsIgnoreCase(actual.getRol())) {
-                btnIrReportes.setVisible(false);
-                btnIrReportes.setManaged(false);
-                if (btnDesactivarUsuario != null) {
-                    btnDesactivarUsuario.setVisible(false);
-                    btnDesactivarUsuario.setManaged(false);
-                }
-            }
-        }
-
-        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        colCorreo.setCellValueFactory(new PropertyValueFactory<>("correo"));
-        colRol.setCellValueFactory(new PropertyValueFactory<>("rol"));
-
+    @FXML
+    public void initialize() {
         cargarUsuarios();
     }
 
     private void cargarUsuarios() {
-        ObservableList<Usuario> lista = FXCollections.observableArrayList(usuarioDAO.listarActivos());
-        tablaUsuarios.setItems(lista);
+        tablaUsuarios.setItems(FXCollections.observableArrayList(usuarioDAO.listarUsuariosActivos()));
     }
 
-    @FXML
-    private void handleDesactivarUsuario(ActionEvent event) {
+    @FXML void abrirFormularioNuevo() throws Exception {
+        UsuarioFormController.usuarioAEditar = null; // Indicamos que es modo Creación
+        App.setRoot("view/nuevo-usuario-view");
+    }
+
+    @FXML void abrirFormularioEditar() throws Exception {
         Usuario seleccionado = tablaUsuarios.getSelectionModel().getSelectedItem();
-        if (seleccionado == null) {
-            lblBienvenida.setText("Por favor, seleccione un trabajador de la tabla.");
-            return;
-        }
-
-        // Proteger al administrador principal del sistema (ID 1)
-        if (seleccionado.getId() == 1) {
-            lblBienvenida.setText("No se puede desactivar al Administrador General.");
-            return;
-        }
-
-        boolean exito = usuarioDAO.desactivar(seleccionado.getId());
-        if (exito) {
-            cargarUsuarios();
-            lblBienvenida.setText("Trabajador desactivado correctamente.");
+        if (seleccionado != null) {
+            UsuarioFormController.usuarioAEditar = seleccionado; // Pasamos el usuario a editar
+            App.setRoot("view/nuevo-usuario-view");
         } else {
-            lblBienvenida.setText("Error al desactivar al trabajador.");
+            new Alert(Alert.AlertType.WARNING, "Seleccione un usuario de la tabla").show();
         }
     }
 
-    @FXML
-    private void handleIrAsistencia(ActionEvent event) {
-        cambiarEscena(event, "/com/example/regattend/view/asistencia-view.fxml", "RegAttend - Registro de Asistencia");
-    }
-
-    @FXML
-    private void handleIrReportes(ActionEvent event) {
-        cambiarEscena(event, "/com/example/regattend/view/reportes-view.fxml", "RegAttend - Reporte de Inasistencias");
-    }
-
-    @FXML
-    private void handleCerrarSesion(ActionEvent event) {
-        SessionManager.cerrarSesion();
-        cambiarEscena(event, "/com/example/regattend/view/login-view.fxml", "RegAttend - Login");
-    }
-
-    private void cambiarEscena(ActionEvent event, String fxmlPath, String titulo) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle(titulo);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
+    @FXML void eliminarUsuario() {
+        Usuario seleccionado = tablaUsuarios.getSelectionModel().getSelectedItem();
+        if (seleccionado != null) {
+            if (usuarioDAO.eliminarUsuario(seleccionado.getId())) {
+                new Alert(Alert.AlertType.INFORMATION, "Usuario eliminado correctamente.").show();
+                cargarUsuarios();
+            }
+        } else {
+            new Alert(Alert.AlertType.WARNING, "Seleccione un usuario para eliminar.").show();
         }
+    }
+
+    @FXML void volver() throws Exception {
+        App.setRoot("view/reportes-view");
     }
 }

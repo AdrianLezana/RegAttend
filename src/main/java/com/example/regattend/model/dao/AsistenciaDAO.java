@@ -1,76 +1,61 @@
 package com.example.regattend.model.dao;
-
 import com.example.regattend.config.DatabaseConnection;
-import com.example.regattend.model.entity.Asistencia;
-
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AsistenciaDAO {
 
-    public Asistencia buscarPorUsuarioYFecha(int usuarioId, LocalDate fecha) {
-        String sql = "SELECT * FROM asistencias WHERE usuario_id = ? AND fecha = ?";
+    public boolean registrarAsistencia(int usuarioId, String accion) {
+        String sql = "INSERT INTO asistencias (usuario_id, accion, fecha_hora) VALUES (?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, usuarioId);
-            pstmt.setString(2, fecha.toString());
+            pstmt.setString(2, accion);
+            // Guardamos la fecha en formato compatible con SQLite
+            pstmt.setString(3, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) { return false; }
+    }
+
+    public List<String> obtenerReporteAtrasos() {
+        List<String> reporte = new ArrayList<>();
+        // strftime extrae la hora en SQLite
+        String sql = "SELECT u.nombre, date(a.fecha_hora) as fecha, strftime('%H:%M:%S', a.fecha_hora) as hora " +
+                "FROM asistencias a JOIN usuarios u ON a.usuario_id = u.id " +
+                "WHERE a.accion = 'ENTRADA' AND strftime('%H:%M:%S', a.fecha_hora) > '09:30:00'";
+        try (Connection conn = DatabaseConnection.getConnection();
+             Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) { reporte.add(rs.getString("nombre") + " - Día: " + rs.getString("fecha") + " - Hora: " + rs.getString("hora")); }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return reporte;
+    }
+
+    public List<String> obtenerReporteSalidasAnticipadas() {
+        List<String> reporte = new ArrayList<>();
+        String sql = "SELECT u.nombre, date(a.fecha_hora) as fecha, strftime('%H:%M:%S', a.fecha_hora) as hora " +
+                "FROM asistencias a JOIN usuarios u ON a.usuario_id = u.id " +
+                "WHERE a.accion = 'SALIDA' AND strftime('%H:%M:%S', a.fecha_hora) < '17:30:00'";
+        try (Connection conn = DatabaseConnection.getConnection();
+             Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) { reporte.add(rs.getString("nombre") + " - Día: " + rs.getString("fecha") + " - Hora: " + rs.getString("hora")); }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return reporte;
+    }
+
+    public List<String> obtenerReporteInasistencias(LocalDate fecha) {
+        List<String> reporte = new ArrayList<>();
+        String sql = "SELECT nombre FROM usuarios WHERE activo = 1 AND rol = 'EMPLEADO' AND id NOT IN (" +
+                "SELECT DISTINCT usuario_id FROM asistencias WHERE date(fecha_hora) = ?)";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, fecha.toString());
             ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                Asistencia a = new Asistencia();
-                a.setId(rs.getInt("id"));
-                a.setUsuarioId(rs.getInt("usuario_id"));
-
-                String fechaStr = rs.getString("fecha");
-                if (fechaStr != null && !fechaStr.isEmpty()) {
-                    a.setFecha(LocalDate.parse(fechaStr));
-                }
-
-                String horaEntradaStr = rs.getString("hora_entrada");
-                if (horaEntradaStr != null && !horaEntradaStr.isEmpty()) {
-                    a.setHoraEntrada(LocalTime.parse(horaEntradaStr));
-                }
-
-                String horaSalidaStr = rs.getString("hora_salida");
-                if (horaSalidaStr != null && !horaSalidaStr.isEmpty()) {
-                    a.setHoraSalida(LocalTime.parse(horaSalidaStr));
-                }
-
-                return a;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public boolean insertarEntrada(int usuarioId, LocalDate fecha, LocalTime horaEntrada) {
-        String sql = "INSERT INTO asistencias (usuario_id, fecha, hora_entrada) VALUES (?, ?, ?)";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, usuarioId);
-            pstmt.setString(2, fecha.toString());
-            pstmt.setString(3, horaEntrada.toString());
-            pstmt.executeUpdate();
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public boolean actualizarSalida(int usuarioId, LocalDate fecha, LocalTime horaSalida) {
-        String sql = "UPDATE asistencias SET hora_salida = ? WHERE usuario_id = ? AND fecha = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, horaSalida.toString());
-            pstmt.setInt(2, usuarioId);
-            pstmt.setString(3, fecha.toString());
-            int filasAfectadas = pstmt.executeUpdate();
-            return filasAfectadas > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+            while (rs.next()) { reporte.add("Inasistencia: " + rs.getString("nombre")); }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return reporte;
     }
 }

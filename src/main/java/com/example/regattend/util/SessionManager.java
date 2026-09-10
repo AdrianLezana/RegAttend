@@ -1,23 +1,19 @@
 package com.example.regattend.util;
-
 import com.example.regattend.model.entity.Usuario;
 
 public class SessionManager {
-    private static Usuario usuarioActual;
+    private static SessionManager instance;
+    private Usuario usuarioActual;
 
-    public static void setUsuarioActual(Usuario usuario) {
-        usuarioActual = usuario;
+    private SessionManager() {}
+
+    public static SessionManager getInstance() {
+        if (instance == null) { instance = new SessionManager(); }
+        return instance;
     }
 
-    public static Usuario getUsuarioActual() {
-        return usuarioActual;
-    }
-
-    public static void cerrarSesion() {
-        usuarioActual = null;
-    }
-
-    public static boolean esAdministrador() {
-        return usuarioActual != null && "ADMIN".equalsIgnoreCase(usuarioActual.getRol());
-    }
+    public void setUsuarioActual(Usuario usuario) { this.usuarioActual = usuario; }
+    public Usuario getUsuarioActual() { return usuarioActual; }
+    public void cerrarSesion() { usuarioActual = null; }
+    public boolean isAdministrador() { return usuarioActual != null && "ADMIN".equals(usuarioActual.getRol()); }
 }
